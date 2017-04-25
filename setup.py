@@ -25,6 +25,7 @@ setup(
     keywords='log monitoring errors warnings',
     packages=find_packages(exclude=['doc*', 'test*']),
     install_requires=[
+        'flask',
     ],
     extras_require={
         #'dev': ['check-manifest'],
