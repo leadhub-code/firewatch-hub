@@ -8,8 +8,16 @@
 # "ca_cert_file: /some/cert" translates to "/some/cert".
 
 firewatch_hub:
+    secret_file: local/secret.txt
     hub_mongodb:
         uri: mongodb://127.0.0.1:27017/
         db_name: firewatch_hub_dev
         ssl:
             ca_cert_file: null # or path to cert file
+    login:
+        allowed_emails:
+            - you@example.com
+        oauth2_google:
+            client_id: null
+            client_secret: null
+            redirect_uri: "http://localhost:5000/login/google/callback"

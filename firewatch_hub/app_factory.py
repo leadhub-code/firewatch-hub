@@ -17,10 +17,13 @@ def get_app(conf_file_path):
     model = get_model_from_conf(conf)
 
     app = flask.Flask(__name__)
+    app.secret_key = conf.secret_file.get_value()
+
     app.register_blueprint(views_bp)
 
     @app.before_request
     def before():
+        flask.g.conf = conf
         flask.g.model = model
 
     return app

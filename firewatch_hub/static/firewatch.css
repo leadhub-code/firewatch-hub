@@ -8,3 +8,6 @@ td pre {
     margin-bottom: 0;
     white-space: pre-line;
 }
+ul.flashes {
+    margin-bottom: 0;
+}

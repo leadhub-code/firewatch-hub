@@ -28,6 +28,7 @@ setup(
         'flask',
         'pymongo',
         'pyyaml',
+        'requests_oauthlib',
         'simplejson',
     ],
     extras_require={
