@@ -26,6 +26,9 @@ setup(
     packages=find_packages(exclude=['doc*', 'test*']),
     install_requires=[
         'flask',
+        'pymongo',
+        'pyyaml',
+        'simplejson',
     ],
     extras_require={
         #'dev': ['check-manifest'],

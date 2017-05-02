@@ -1,4 +1,41 @@
 {% extends "base.html" %}
 {% block content %}
   <h1>Firewatch</h1>
+
+  <table class="table table-sm">
+    <colgroup>
+      <col>
+      <col>
+      <col style="max-width: 2em">
+    </colgroup>
+    <thead class="thead-default">
+      <tr>
+        <th>Host</th>
+        <th>Date</th>
+        <th>Log path</th>
+        <th>Message</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for event in events %}
+        <tr>
+          <td style="max-width: 3em">{{ event['host'] }}</td>
+          <td style="max-width: 3em">
+            <small>{{ event['date_date'] }}</small><br>
+            {{ event['date_time'] }}
+          </td>
+          <td style="max-width: 4em">
+            <small>{{ event['log_dir'] }}/</small><wbr><b>{{ event['log_filename'] }}</b>
+          </td>
+          <td>
+            <pre>{{ event['message'] }}</pre>
+          </td>
+        </tr>
+      {% endfor %}
+
+    </tbody>
+  </table>
+
+
+
 {% endblock %}

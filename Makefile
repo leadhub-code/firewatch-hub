@@ -16,3 +16,10 @@ $(venv_dir)/packages-installed: Makefile setup.py
 	$(venv_dir)/bin/pip install pytest
 	$(venv_dir)/bin/pip install -e .
 	touch $@
+
+run-mongod:
+	mkdir -p local/db-data
+	mongod \
+		--dbpath local/db-data \
+		--port 27017 \
+		--wiredTigerCacheSizeGB 1

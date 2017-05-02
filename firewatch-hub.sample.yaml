@@ -1,0 +1,15 @@
+# Sample configration file
+# ========================
+
+# All paths are relative to location of the configuration file - for example
+# if the configuration file is "/some/conf/foo.yaml" then
+# "ca_cert_file: some/cert" translates to "/some/conf/some/cert" and
+# "ca_cert_file: ../some/cert" translates to "/some/some/cert" but
+# "ca_cert_file: /some/cert" translates to "/some/cert".
+
+firewatch_hub:
+    hub_mongodb:
+        uri: mongodb://127.0.0.1:27017/
+        db_name: firewatch_hub_dev
+        ssl:
+            ca_cert_file: null # or path to cert file

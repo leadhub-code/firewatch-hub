@@ -1,1 +1,1 @@
-from .app import get_app
+from .app_factory import get_app
