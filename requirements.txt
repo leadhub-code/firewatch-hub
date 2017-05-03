@@ -1,0 +1,14 @@
+click==6.7
+Flask==0.12.1
+itsdangerous==0.24
+Jinja2==2.9.6
+MarkupSafe==1.0
+oauthlib==2.0.2
+py==1.4.33
+pymongo==3.4.0
+pytest==3.0.7
+PyYAML==3.12
+requests==2.13.0
+requests-oauthlib==0.8.0
+simplejson==3.10.0
+Werkzeug==0.12.1

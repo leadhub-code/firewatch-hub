@@ -24,6 +24,8 @@ setup(
     ],
     keywords='log monitoring errors warnings',
     packages=find_packages(exclude=['doc*', 'test*']),
+    include_package_data=True,
+    zip_safe=False,
     install_requires=[
         'flask',
         'pymongo',

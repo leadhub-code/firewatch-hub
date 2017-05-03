@@ -1,5 +1,6 @@
 venv_dir=local/venv
 python3=python3.5
+docker_image_name=firewatch-hub
 
 check: $(venv_dir)/packages-installed
 	$(venv_dir)/bin/pytest -v tests
@@ -25,3 +26,6 @@ run-mongod:
 		--dbpath local/db-data \
 		--port 27017 \
 		--wiredTigerCacheSizeGB 1
+
+docker-image:
+	docker build -t $(docker_image_name) .

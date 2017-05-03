@@ -1,4 +1,5 @@
 import logging
+from pathlib import Path
 import pymongo
 import re
 

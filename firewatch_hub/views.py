@@ -2,6 +2,7 @@ from datetime import datetime
 import flask
 from flask import Blueprint, render_template, request, jsonify, g, url_for
 import logging
+import os
 import simplejson as json
 
 from .util import smart_repr
@@ -133,3 +134,16 @@ def report():
             agent_id=report['agent_id'],
             events=report['events'])
     return jsonify({'ok': True})
+
+
+@bp.route('/_info')
+def debug_info():
+    if not os.environ.get('DEBUG_INFO'):
+        flask.abort(403)
+    return jsonify({
+        'request': {
+            'url': request.url,
+            'remote_addr': request.remote_addr,
+            'headers': list(request.headers.items()),
+        },
+    })

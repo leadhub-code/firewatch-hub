@@ -8,6 +8,6 @@ td pre {
     margin-bottom: 0;
     white-space: pre-line;
 }
-ul.flashes {
+div.alert :last-child {
     margin-bottom: 0;
 }

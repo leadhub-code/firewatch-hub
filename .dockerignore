@@ -1,0 +1,5 @@
+.git
+*.egg-info
+local
+__pycache__
+firewatch-hub.yaml
