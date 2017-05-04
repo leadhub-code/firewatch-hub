@@ -115,9 +115,14 @@ def dashboard():
         else:
             rest_events.append(event)
     return render_template('index.html',
+        mobile=is_mobile(),
         last_hour_events=[event_template_data(ev) for ev in hour_events],
         today_events=[event_template_data(ev) for ev in today_events],
         rest_events=[event_template_data(ev) for ev in rest_events])
+
+
+def is_mobile():
+    return request.user_agent.platform in ['iphone', 'android']
 
 
 def event_template_data(event):
