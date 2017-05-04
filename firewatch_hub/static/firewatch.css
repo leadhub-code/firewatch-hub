@@ -1,5 +1,10 @@
-html {
+body {
     font-size: 90%;
+    font-family: 'roboto condensed', sans-serif;
+}
+code, pre {
+    font-family: inconsolata, terminus, monospace;
+    font-size: 100%;
 }
 h1 {
     margin-top: 1rem;
@@ -10,4 +15,11 @@ td pre {
 }
 div.alert :last-child {
     margin-bottom: 0;
+}
+table.table thead th {
+    color: #eee;
+    background-color: #333;
+    padding-top: 0.1rem;
+    padding-bottom: 0.1rem;
+    font-size: 90%;
 }
