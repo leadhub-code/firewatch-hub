@@ -23,6 +23,7 @@ h2 {
 td pre {
     margin-bottom: 0;
     white-space: pre-line;
+    word-break: break-word;
 }
 div.alert :last-child {
     margin-bottom: 0;
