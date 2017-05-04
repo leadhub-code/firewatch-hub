@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 import flask
 from flask import Blueprint, render_template, request, jsonify, g, url_for
 from jinja2 import Markup, escape
@@ -101,9 +101,23 @@ def login_google_callback():
 def dashboard():
     if not flask.session.get('logged_in_user'):
         return flask.redirect('/login/')
-    events = list(g.model.c_events.find(limit=100, sort=[('_id', -1)]))
+    hour_events = []
+    today_events = []
+    rest_events = []
+    now = datetime.utcnow()
+    now_1h = now - timedelta(hours=1)
+    today = min(now - timedelta(hours=3), datetime(now.year, now.month, now.day))
+    for event in g.model.c_events.find(limit=100, sort=[('_id', -1)]):
+        if event['date'] > now_1h:
+            hour_events.append(event)
+        elif event['date'] > today:
+            hour_events.append(event)
+        else:
+            rest_events.append(event)
     return render_template('index.html',
-        events=[event_template_data(ev) for ev in events])
+        last_hour_events=[event_template_data(ev) for ev in hour_events],
+        today_events=[event_template_data(ev) for ev in today_events],
+        rest_events=[event_template_data(ev) for ev in rest_events])
 
 
 def event_template_data(event):
