@@ -19,12 +19,11 @@
     <tbody>
       {% for event in events %}
         <tr>
-          <td style="min-width: 7em; max-width: 12em">{{ event['host'] }}</td>
-          <td style="min-width: 5em; max-width: 10em">
-            <small>{{ event['date_date'] }}</small><br>
-            {{ event['date_time'] }}
+          <td style="min-width: 7em; max-width: 10em">{{ event['host'] }}</td>
+          <td style="min-width: 5em; max-width: 8em">
+            {{ event['nice_date'] }}
           </td>
-          <td style="min-width: 8em; max-width: 20em">
+          <td style="min-width: 8em; max-width: 12em">
             <small>{{ event['log_dir'] }}/</small><wbr><b>{{ event['log_filename'] }}</b>
           </td>
           <td>
@@ -35,7 +34,5 @@
 
     </tbody>
   </table>
-
-
 
 {% endblock %}

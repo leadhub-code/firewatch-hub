@@ -1,6 +1,7 @@
 from datetime import datetime
 import flask
 from flask import Blueprint, render_template, request, jsonify, g, url_for
+from jinja2 import Markup, escape
 import logging
 import os
 import simplejson as json
@@ -106,18 +107,39 @@ def dashboard():
 
 
 def event_template_data(event):
-    from jinja2 import Markup, escape
     *log_parts, log_filename = event['log_path'].split('/')
     log_dir = Markup('/<wbr>'.join(escape(p) for p in log_parts))
     return {
         'host': event['host'],
-        'date': event['date'].strftime('%Y-%m-%d %H:%M:%S'),
-        'date_date': event['date'].strftime('%Y-%m-%d'),
-        'date_time': event['date'].strftime('%H:%M:%S'),
+        'nice_date': nice_date(event['date']),
         'message': event['chunk'].rstrip(),
         'log_dir': log_dir,
         'log_filename': log_filename,
     }
+
+
+def nice_date(dt, now=None):
+    assert isinstance(dt, datetime)
+    if now is None:
+        now = datetime.utcnow()
+    if dt < now:
+        diff = now - dt
+        diff_s = int(diff.total_seconds())
+        pretty = None
+        if diff_s < 60:
+            pretty = '{s} s ago'.format(s=diff_s)
+        elif diff_s < 3600:
+            pretty = '{m} min<br>ago'.format(m=diff_s // 60)
+        elif diff_s < 6 * 3600:
+            pretty  ='{h} h {m} min ago'.format(
+                h=diff_s // 3600, m=diff_s // 60)
+        if pretty:
+            return Markup('<span title="{full}">{pretty}</span>'.format(
+                pretty=pretty,
+                full=dt.strftime('%Y-%m-%d %H:%M:%S')))
+    return Markup('<small>{date}</small><br>{time}'.format(
+        date=dt.strftime('%Y-%m-%d'),
+        time=dt.strftime('%H:%M:%S')))
 
 
 @bp.route('/firewatch-hub/report', methods=['POST'])
