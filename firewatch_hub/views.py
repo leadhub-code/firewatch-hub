@@ -101,24 +101,33 @@ def login_google_callback():
 def dashboard():
     if not flask.session.get('logged_in_user'):
         return flask.redirect('/login/')
+    events = g.model.get_latest_events()
+    hour_events, today_events, rest_events = split_events_htr(events)
+    return render_template('dashboard.html',
+        mobile=is_mobile(),
+        last_hour_events=[event_template_data(ev) for ev in hour_events],
+        today_events=[event_template_data(ev) for ev in today_events],
+        rest_events=[event_template_data(ev) for ev in rest_events])
+
+
+def split_events_htr(events, now=None):
+    '''
+    htr = hour/today/rest ;)
+    '''
     hour_events = []
     today_events = []
     rest_events = []
-    now = datetime.utcnow()
+    now = now or datetime.utcnow()
     now_1h = now - timedelta(hours=1)
     today = min(now - timedelta(hours=3), datetime(now.year, now.month, now.day))
-    for event in g.model.c_events.find(limit=100, sort=[('_id', -1)]):
+    for event in events:
         if event['date'] > now_1h:
             hour_events.append(event)
         elif event['date'] > today:
             hour_events.append(event)
         else:
             rest_events.append(event)
-    return render_template('dashboard.html',
-        mobile=is_mobile(),
-        last_hour_events=[event_template_data(ev) for ev in hour_events],
-        today_events=[event_template_data(ev) for ev in today_events],
-        rest_events=[event_template_data(ev) for ev in rest_events])
+    return (hour_events, today_events, rest_events)
 
 
 def is_mobile():
