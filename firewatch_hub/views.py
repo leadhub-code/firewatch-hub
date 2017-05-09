@@ -160,7 +160,7 @@ def nice_date(dt, now=None):
             pretty = '{m} min<br>ago'.format(m=diff_s // 60)
         elif diff_s < 6 * 3600:
             pretty  ='{h} h {m} min ago'.format(
-                h=diff_s // 3600, m=diff_s // 60)
+                h=diff_s // 3600, m=(diff_s % 3600) // 60)
         if pretty:
             return Markup('<span title="{full}">{pretty}</span>'.format(
                 pretty=pretty,
