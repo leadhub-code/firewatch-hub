@@ -4,6 +4,7 @@ from flask import Blueprint, render_template, request, jsonify, g, url_for
 from jinja2 import Markup, escape
 import logging
 import os
+import re
 import simplejson as json
 
 from .util import smart_repr
@@ -103,11 +104,49 @@ def dashboard():
         return flask.redirect('/login/')
     events = g.model.get_latest_events()
     hour_events, today_events, rest_events = split_events_htr(events)
+    hour_groups = group_events(hour_events)
+    today_groups = group_events(today_events)
+    rest_groups = group_events(rest_events)
     return render_template('dashboard.html',
         mobile=is_mobile(),
-        last_hour_events=[event_template_data(ev) for ev in hour_events],
-        today_events=[event_template_data(ev) for ev in today_events],
-        rest_events=[event_template_data(ev) for ev in rest_events])
+        last_hour_groups=[group_template_data(ev) for ev in hour_groups],
+        today_groups=[group_template_data(ev) for ev in today_groups],
+        rest_groups=[group_template_data(ev) for ev in rest_groups])
+
+
+# temporarily hardcoded; would be transformed into web admin
+group_regexes = [
+    re.compile(r'Message .* was already sent in campaign'),
+    re.compile(r"Call failed: Exception\('Invalid type: None',\); metadata: .*getCampaigns"),
+    re.compile(r"ERROR: Exception: TypeError\(.can't serialize datetime.datetime"),
+    re.compile(r"ERROR: Call failed: Exception\('Invalid type: None',\); "),
+    re.compile(r"ERROR: Exception: DeserializeError\(.Failed to deserialize b'\\+xc2': first byte 194 not recognized.,\)"),
+    re.compile(r"got an unexpected keyword argument 'system'"),
+    re.compile(r"ERROR: Call failed: AssertionError\(\); .*getAccount"),
+]
+
+
+def group_events(events):
+    by_group = {gre: [] for gre in group_regexes}
+    by_group[None] = []
+    for event in events:
+        matching_gre = None
+        for gre in group_regexes:
+            if gre.search(event['chunk']):
+                matching_gre = gre
+                break
+        by_group[matching_gre].append(event)
+    groups = [
+        {
+            'pattern': gre.pattern if gre else None,
+            'events': matched_events,
+        }
+        for gre, matched_events in by_group.items()
+        if matched_events]
+    groups.sort(key=lambda g: g['pattern'] or '')
+    groups.sort(key=lambda g: g['pattern'] is None)
+    # but maybe it should be in the same order as group_regexes...
+    return groups
 
 
 def split_events_htr(events, now=None):
@@ -124,7 +163,7 @@ def split_events_htr(events, now=None):
         if event['date'] > now_1h:
             hour_events.append(event)
         elif event['date'] > today:
-            hour_events.append(event)
+            today_events.append(event)
         else:
             rest_events.append(event)
     return (hour_events, today_events, rest_events)
@@ -132,6 +171,18 @@ def split_events_htr(events, now=None):
 
 def is_mobile():
     return request.user_agent.platform in ['iphone', 'android']
+
+
+def group_template_data(group):
+    if group['pattern']:
+        events = group['events'][:3]
+    else:
+        events = group['events'][:100]
+    return {
+        'pattern': group['pattern'],
+        'events': [event_template_data(ev) for ev in events],
+        'event_count': len(group['events']),
+    }
 
 
 def event_template_data(event):

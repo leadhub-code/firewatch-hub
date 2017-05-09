@@ -46,5 +46,5 @@ class Model:
             self.c_events.insert_many(docs, ordered=False)
             logger.info('Inserted %s events', len(docs))
 
-    def get_latest_events(self, count=50000):
+    def get_latest_events(self, count=150000):
         return list(self.c_events.find(limit=count, sort=[('_id', -1)]))

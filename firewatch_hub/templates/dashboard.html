@@ -31,7 +31,7 @@
             <td style="min-width: 5em; max-width: 8em">
               {{ event['nice_date'] }}
             </td>
-            <td style="min-width: 12em; max-width: 12em">
+            <td style="min-width: 16em; max-width: 16em">
               <small>{{ event['log_dir'] }}/</small><wbr><b>{{ event['log_filename'] }}</b>
             </td>
             {% if not mobile %}
@@ -52,13 +52,35 @@
     </table>
   {% endmacro %}
 
+  {% macro show_groups(groups) %}
+    {% if not groups %}
+        <p>No messages</p>
+    {% else %}
+        {% for group in groups %}
+
+            <h3>
+                {% if group['pattern'] %}
+                    <code>{{ group['pattern'] }}</code>
+                {% else %}
+                    Not matched
+                {% endif %}
+                &nbsp;&times;{{ group['event_count'] }}
+            </h3>
+
+            {{ event_table(group['events']) }}
+
+        {% endfor %}
+    {% endif %}
+  {% endmacro %}
+
+
   <h2>In last hour</h2>
-  {{ event_table(last_hour_events) }}
+  {{ show_groups(last_hour_groups) }}
 
   <h2>Today</h2>
-  {{ event_table(today_events) }}
+  {{ show_groups(today_groups) }}
 
-  <h2>Before</h2>
-  {{ event_table(rest_events) }}
+  <h2>Before today</h2>
+  {{ show_groups(rest_groups) }}
 
 {% endblock %}
